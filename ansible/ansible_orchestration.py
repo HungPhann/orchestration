@@ -88,4 +88,4 @@ def create_ansible_vm(vm_name):
 						'status': inst_status
 	})
 
-print create_ansible_vm('www_acc17_ansible_1')
+print create_ansible_vm('www_acc17_ansible_1_IMPORTANT')
