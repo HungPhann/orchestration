@@ -4,8 +4,18 @@ apt_update: true
 apt_upgrade: true
 packages:
  - python-minimal
+ - python-pip
 byobu_default: system 
 
+write_files:
+  - path: /home/ubuntu/app.py
+    content: |
+      data = "Host 192.168.*.*\n" + "   StrictHostKeyChecking no\n" + "   UserKnownHostsFile=/dev/null\n" 
+      with open("/etc/ssh/ssh_config", 'r+') as f:
+          content = f.read()
+          f.seek(0, 0)
+          f.write(data + '\n' + content)
+     
 ssh_keys:
   rsa_private: |
     -----BEGIN RSA PRIVATE KEY-----
@@ -38,10 +48,15 @@ ssh_keys:
 
   rsa_public: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC2jAxshU8ByvFdgn8nQRv0IIJ07bQElpOyD8xO33D7S4wQSgzUaAyhE3uvFqyfJIATU+YEOxnHOInIk2G6rkjgkLsF6ZmnXowt22FduYzkDBnS9EeOZkOhR3Guvuo58DaNRmfnfp0ZtpOUNq1q8CqE/yeULuiPAq9ue50c4imCqVpXnIIEFWz1Qs0uUwMWOduSzG0imeqePwbIe4odyYMZn/AW31sQpvNK6AO2b5QqA3BsXDnSMsOnI0u8uYiXjIqJL+lzIuw02n68HDSNpf2nmo1RZsXJGpKDhcGKXcpX8d1BIursHNtBvxRzXIvQIn9/5Ink+w72IQxUrE8jSFSp hungphan@hungphan
 
-
 runcmd:
  - sudo bash
+ - export LC_ALL="en_US.UTF-8"
+ - export FLASK_CONFIG=production
  - git clone https://github.com/QTLaaS/QTLaaS.git /home/ubuntu/QTLaaS
- - /home/ubuntu/QTLaaS/ansible_install.sh 
+ - git clone https://gitlab.com/HungPhann/acc17-ansible.git /home/ubuntu/acc17-ansible
+ - sudo /home/ubuntu/QTLaaS/ansible_install.sh
+ - pip install -r /home/ubuntu/acc17-ansible/requirements.txt 
  - sudo cp /etc/ssh/ssh_host_rsa_key /root/.ssh/id_rsa
  - sudo cp /etc/ssh/ssh_host_rsa_key.pub /root/.ssh/id_rsa.pub
+ - sudo python /home/ubuntu/app.py
+ - python /home/ubuntu/acc17-ansible/run.py &
