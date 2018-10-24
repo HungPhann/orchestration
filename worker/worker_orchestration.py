@@ -77,4 +77,4 @@ def create_ansible_vm(vm_name):
 						'status': inst_status
 	})
 
-print create_ansible_vm('www_acc17_worker_1_IMPORTANT')
+print create_ansible_vm('ACC17_WORKER_IMPORTANT')
